@@ -36,6 +36,10 @@ type Msg
     | Password String
     | PasswordAgain String
 
+type ValidationError
+  = InvalidPasswordTooShort Int String
+  | InvalidPassword String
+  | InvalidAge String
 
 update : Msg -> Model -> Model
 update msg model =
@@ -68,9 +72,16 @@ viewValidation : Model -> Html msg
 viewValidation model =
   let
     (color, message) =
-      if model.password == model.passwordAgain then
-        ("green", "OK")
+      if (String.length model.password) >= 8 then
+        if model.password == model.passwordAgain then
+          ("green", "OK")
+        else
+          ("red", "Passwords do not match!")
       else
-        ("red", "Passwords do not match!")
+        ("red", "Password must be at least 8 characters long")
   in
     div [ style [("color", color)] ] [ text message ]
+
+--validatePassword : String -> String -> Result ValidationError String
+--validatePassword password passwordAgain =
+
